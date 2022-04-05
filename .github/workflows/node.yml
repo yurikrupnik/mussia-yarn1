@@ -96,6 +96,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+      - uses: c-hive/gha-yarn-cache@v2
           #         cache: 'pnpm'
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
@@ -122,6 +123,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+#      - uses: c-hive/gha-yarn-cache@v2
           #         cache: 'pnpm'
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
