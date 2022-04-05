@@ -38,6 +38,7 @@ jobs:
 #          version: 6.11.0
 #          run_install: true
       #      - run: npm install
+      - run: yarn
       - run: npx nx-cloud start-ci-run
       - run: yarn nx affected --target=build --parallel --max-parallel=3 --prod
       - run: yarn nx affected --target=test --parallel --max-parallel=2
@@ -71,6 +72,7 @@ jobs:
 #        with:
 #          version: 6.11.0
 #          run_install: true
+      - run: yarn
       - run: npx nx-cloud start-ci-run
       - run: yarn nx affected --target=build --parallel --max-parallel=3 --prod
       - run: yarn nx affected --target=test --parallel --max-parallel=2
