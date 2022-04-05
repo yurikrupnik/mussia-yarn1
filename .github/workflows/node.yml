@@ -33,7 +33,19 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+#       yarn cache
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
+# end yarn cache
       - run: yarn
       - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
       - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
@@ -49,6 +61,18 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+#       yarn cache
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
 #        with:
@@ -73,6 +97,18 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+      #       yarn cache
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
 #        with:
@@ -84,7 +120,6 @@ jobs:
 #        with:
 #          version: 6.11.0
 #          run_install: true
-      - run: yarn install
       - run: yarn test
   lint:
     runs-on: ubuntu-latest
@@ -97,34 +132,17 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
-      - uses: c-hive/gha-yarn-cache@v2
-          #         cache: 'pnpm'
-#      - name: Cache pnpm modules
-#        uses: actions/cache@v2
-#        with:
-#          path: ~/.pnpm-store
-#          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-#          restore-keys: |
-#            ${{ runner.os }}-
-#      - uses: pnpm/action-setup@v2.1.0
-#        with:
-#          version: 6.11.0
-#          run_install: true
-      - run: yarn install
-      - run: yarn lint
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-  e2e:
-    runs-on: ubuntu-latest
-    needs: [ 'setup' ]
-    steps:
-      - uses: actions/checkout@v2
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
         with:
-          fetch-depth: 0
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-#      - uses: c-hive/gha-yarn-cache@v2
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
           #         cache: 'pnpm'
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
@@ -138,4 +156,28 @@ jobs:
 #          version: 6.11.0
 #          run_install: true
 #      - run: yarn install
+      - run: yarn lint
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [ 'setup' ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
 #      - run: yarn e2e
