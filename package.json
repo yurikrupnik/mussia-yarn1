@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "PORT=3334 pnpx nx  run be-api-service:serve & pnpx nx run be-api-service:serve & pnpx nx run fe-solid-app:serve",
     "start": "nx serve",
-    "build": "pnpx nx run-many --target=build --parallel --max-parallel=4 --prod --all",
-    "lint": "pnpx nx run-many --target=lint --parallel --max-parallel=4 --all",
-    "serve": "pnpx nx run-many --target=serve --parallel --max-parallel=4 --all",
+    "build": "yarn nx run-many --target=build --parallel --max-parallel=4 --prod --all",
+    "lint": "yarn nx run-many --target=lint --parallel --max-parallel=4 --all",
+    "serve": "yarn nx run-many --target=serve --parallel --max-parallel=4 --all",
     "test": "yarn nx run-many --target=test --parallel --max-parallel=4 --all",
-    "e2e": "pnpx nx run-many --target=e2e --parallel --max-parallel=4 --all --headless"
+    "e2e": "yarn nx run-many --target=e2e --parallel --max-parallel=4 --all --headless"
   },
   "private": true,
   "dependencies": {
