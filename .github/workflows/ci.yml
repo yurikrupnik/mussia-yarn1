@@ -25,6 +25,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+      - uses: actions/checkout@v1
       #          cache: 'pnpm'
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
@@ -61,6 +62,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+      - uses: actions/checkout@v1
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
 #        with:
