@@ -1,0 +1,112 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [main]
+        with:
+          fetch-depth: 0
+#      - uses: pnpm/action-setup@v2.1.0
+#        with:
+#          version: 6.11.0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      #          cache: 'pnpm'
+#      - name: Cache pnpm modules
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.pnpm-store
+#          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-
+#      - uses: pnpm/action-setup@v2.1.0
+#        with:
+#          version: 6.11.0
+#          run_install: true
+      #      - run: npm install
+      - run: yarn nx-cloud start-ci-run
+      - run: yarn nx affected --target=build --parallel --max-parallel=3 --prod
+      - run: yarn nx affected --target=test --parallel --max-parallel=2
+      - run: yarn nx affected --target=lint --parallel --max-parallel=2
+#      - run: pnpx nx affected --target=e2e --parallel --max-parallel=2 --headless
+      - run: yarn nx-cloud stop-all-agents
+  pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      #      - uses: pnpm/action-setup@v2.1.0
+      #        with:
+      #          version: 6.11.0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+#      - name: Cache pnpm modules
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.pnpm-store
+#          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-
+#      - uses: pnpm/action-setup@v2.1.0
+#        with:
+#          version: 6.11.0
+#          run_install: true
+      - run: yarn nx-cloud start-ci-run
+      - run: yarn nx affected --target=build --parallel --max-parallel=3 --prod
+      - run: yarn nx affected --target=test --parallel --max-parallel=2
+      - run: yarn nx affected --target=lint --parallel --max-parallel=2
+#      - run: yarn nx affected --target=e2e --parallel --max-parallel=2 --headless
+      - run: yarn nx-cloud stop-all-agents
+  agents:
+    runs-on: ubuntu-latest
+    name: Agent 1
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        agent: [ 1, 2, 3 ]
+    steps:
+      - uses: actions/checkout@v2
+#      - uses: pnpm/action-setup@v2.1.0
+#        with:
+#          version: 6.11.0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      #          cache: 'pnpm'
+      #      - run: pnpm i
+      #      - uses: actions/setup-node@v1
+      #        with:
+      #          node-version: '16'
+#      - name: Cache pnpm modules
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.pnpm-store
+#          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-
+#      - uses: pnpm/action-setup@v2.1.0
+#        with:
+#          version: 6.11.0
+#          run_install: true
+      - name: Start Nx Agent ${{ matrix.agent }}
+        run: npx nx-cloud start-agent
