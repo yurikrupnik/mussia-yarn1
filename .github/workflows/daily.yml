@@ -41,6 +41,8 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
 #          End yarn cache
+      - run: yarn install --prefer-offline --frozen-lockfile
+
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
 #        with:
@@ -85,7 +87,7 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-      #      - run: pnpm i
+      - run: yarn install --prefer-offline --frozen-lockfile
       #      - name: Set up Cloud SDK
       #        uses: google-github-actions/setup-gcloud@master
       #        with:
