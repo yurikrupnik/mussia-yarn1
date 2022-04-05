@@ -25,7 +25,18 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
-      - uses: c-hive/gha-yarn-cache@v2
+      #       yarn cache
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
       #          cache: 'pnpm'
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
@@ -39,7 +50,6 @@ jobs:
 #          version: 6.11.0
 #          run_install: true
       #      - run: npm install
-      - run: yarn
       - run: npx nx-cloud start-ci-run
       - run: yarn nx affected --target=build --parallel --max-parallel=3 --prod
       - run: yarn nx affected --target=test --parallel --max-parallel=2
@@ -62,7 +72,18 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
-      - uses: c-hive/gha-yarn-cache@v2
+      #       yarn cache
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
 #        with:
@@ -74,7 +95,7 @@ jobs:
 #        with:
 #          version: 6.11.0
 #          run_install: true
-      - run: yarn
+#      - run: yarn
       - run: npx nx-cloud start-ci-run
       - run: yarn nx affected --target=build --parallel --max-parallel=3 --prod
       - run: yarn nx affected --target=test --parallel --max-parallel=2
@@ -96,6 +117,18 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+      #       yarn cache
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install --prefer-offline --frozen-lockfile
       #          cache: 'pnpm'
       #      - run: pnpm i
       #      - uses: actions/setup-node@v1
